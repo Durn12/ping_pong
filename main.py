@@ -35,7 +35,7 @@ class Player(GameSprite):
             if self.rect.y > 550:
                 self.rect.y - 550
                 
-img_back = 'galaxy.png'
+img_back = 'galaxy.jpg'
 img_asteroid = 'asteroid.png'
 img_racket = 'racket.png'
 
@@ -47,7 +47,7 @@ background = pygame.transform.scale(pygame.image.load(img_back), (win_width, win
 
 
 pygame.font.init()
-font1 = pygame.font.Font(None, 36)
+font1 = pygame.font.Font(None, 72)
 font2 = pygame.font.Font(None, 36)
 lose1 = font1.render('PLAYER 1 LOSE!', True, (180, 0, 0))
 lose2 = font2.render('PLAYER 2 LOSE!', True, (180, 0, 0))
@@ -75,7 +75,7 @@ while game:
             game = False
         
     if finish != True:
-        score = font2.render('Счёт: ' + str(racket1.points) + ':' + str(racket2.points))
+        score = font2.render('Счёт: ' + str(racket1.points) + ':' + str(racket2.points), 1, (255, 255, 255))
         window.blit(score, (500, 20))
         window.blit(background, (0, 0))
         racket1.update_l()
@@ -84,23 +84,23 @@ while game:
         ball.rect.y += speed_y
         
         if pygame.sprite.collide_rect(racket1, ball) or pygame.sprite.collide_rect(racket2, ball):
-            speed *= -1
-            speed *= 1
+            speed_x *= -1
+            speed_y *= 1
             
         if ball.rect.y > win_height-50 or ball.rect.y < 0:
-            speed *= -1
+            speed_y *= -1
             
         if ball.rect.x < 0:
             racket2.points += 1
             if racket2.points > 5:
                 finish = True
-                window.blit(lose1, (200, 200))
+                window.blit(lose1, (400, 300))
                 
         if ball.rect.x > win_width:
             racket1.points += 1
             if racket1.points > 5:
                 finish = True
-                window.blit(lose2, (200, 200))
+                window.blit(lose2, (400, 300))
                 
         racket1.reset()
         racket2.reset()
