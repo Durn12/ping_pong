@@ -34,3 +34,77 @@ class Player(GameSprite):
             self.rect.y += self.speed
             if self.rect.y > 550:
                 self.rect.y - 550
+                
+img_back = 'galaxy.png'
+img_asteroid = 'asteroid.png'
+img_racket = 'racket.png'
+
+back = (200, 255, 255)
+win_width = 1200
+win_height = 700
+window = pygame.display.set_mode((win_width, win_height))
+background = pygame.transform.scale(pygame.image.load(img_back), (win_width, win_height))
+
+
+pygame.font.init()
+font1 = pygame.font.Font(None, 36)
+font2 = pygame.font.Font(None, 36)
+lose1 = font1.render('PLAYER 1 LOSE!', True, (180, 0, 0))
+lose2 = font2.render('PLAYER 2 LOSE!', True, (180, 0, 0))
+
+pygame.mixer.init()
+pygame.mixer.music.load('space.ogg')
+pygame.mixer.music.play()
+
+game = True
+finish = False
+game_over = False
+clock = pygame.time.Clock()
+FPS = 60
+
+racket1 = Player(img_racket, 30, 200, 4, 50, 150, 0)
+racket2 = Player(img_racket, 1120, 200, 4, 50, 150, 0)
+ball = GameSprite(img_asteroid, 200, 200, 4, 50, 50)
+
+speed_x = 4
+speed_y = 4
+
+while game:
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
+            game = False
+        
+    if finish != True:
+        score = font2.render('Счёт: ' + str(racket1.points) + ':' + str(racket2.points))
+        window.blit(score, (500, 20))
+        window.blit(background, (0, 0))
+        racket1.update_l()
+        racket2.update_r()
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
+        
+        if pygame.sprite.collide_rect(racket1, ball) or pygame.sprite.collide_rect(racket2, ball):
+            speed *= -1
+            speed *= 1
+            
+        if ball.rect.y > win_height-50 or ball.rect.y < 0:
+            speed *= -1
+            
+        if ball.rect.x < 0:
+            racket2.points += 1
+            if racket2.points > 5:
+                finish = True
+                window.blit(lose1, (200, 200))
+                
+        if ball.rect.x > win_width:
+            racket1.points += 1
+            if racket1.points > 5:
+                finish = True
+                window.blit(lose2, (200, 200))
+                
+        racket1.reset()
+        racket2.reset()
+        ball.reset()
+        
+    pygame.display.update()
+    clock.tick(FPS)
